@@ -41,18 +41,21 @@ handleGuess :: Puzzle -> Char -> Puzzle
 handleGuess puzzle@(Puzzle _ completed' guesses' _) guess =
     newPuzzle { state = newState }
   where
-    newPuzzle = puzzle { guesses = (guess : guesses'), completed = newFilledInSoFar }
+    newPuzzle = puzzle { guesses = (guess : guesses'), completed = newFilledInSoFar puzzle guess }
     newState
         | all isJust (completed newPuzzle) = Won
         | length (guesses newPuzzle) > 7   = Lost
         | elem guess guesses'              = AlreadyGuessed guess
         | otherwise                        = Playing
+
+newFilledInSoFar :: Puzzle -> Char -> [Maybe Char]
+newFilledInSoFar (Puzzle answer' completed' _ _) guess =
+    zipWith (zipper guess) answer' completed'
+  where
     zipper guessed wordChar guessChar =
         case wordChar == guessed of
             True  -> Just wordChar
             False -> guessChar
-    newFilledInSoFar =
-        zipWith (zipper guess) (answer puzzle) completed'
 
 instance Show Puzzle where
     show (Puzzle _ completed' guesses' _) =
