@@ -11,9 +11,8 @@ pickRandomWord =
     allWords >>= randomWord
 
 allWords :: IO WordList
-allWords = do
-    dict <- readFile "data/dict.txt"
-    return $ gameWords $ lines dict
+allWords =
+    readFile "data/dict.txt" >>= return . gameWords . lines
 
 randomWord :: WordList -> IO String
 randomWord wl = do
