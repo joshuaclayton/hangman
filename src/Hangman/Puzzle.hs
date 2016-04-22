@@ -38,10 +38,9 @@ handleInput puzzle input =
     puzzle { state = InvalidGuess input }
 
 handleGuess :: Puzzle -> Char -> Puzzle
-handleGuess puzzle guess =
+handleGuess puzzle@(Puzzle _ completed' guesses' _) guess =
     newPuzzle { state = newState }
   where
-    (Puzzle _ completed' guesses' _) = puzzle
     newPuzzle = puzzle { guesses = (guess : guesses'), completed = newFilledInSoFar }
     newState
         | all isJust (completed newPuzzle) = Won
