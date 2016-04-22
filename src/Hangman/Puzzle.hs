@@ -6,8 +6,8 @@ module Hangman.Puzzle
     , handleInput
     ) where
 
-import Data.Maybe (isJust, fromMaybe)
-import Data.List (intersperse)
+import Data.Maybe (isJust, fromMaybe, catMaybes)
+import Data.List (intersperse, nub, (\\))
 
 data PuzzleState = NotStarted | Playing | InvalidGuess String | AlreadyGuessed Char | Won | Lost
 
@@ -41,12 +41,15 @@ handleGuess :: Puzzle -> Char -> Puzzle
 handleGuess puzzle@(Puzzle _ completed' guesses' _) guess =
     newPuzzle { state = newState }
   where
-    newPuzzle = puzzle { guesses = (guess : guesses'), completed = newFilledInSoFar puzzle guess }
+    newPuzzle = puzzle { guesses = newGuesses, completed = newCompleted }
     newState
         | all isJust (completed newPuzzle) = Won
         | length (guesses newPuzzle) > 7   = Lost
-        | elem guess guesses'              = AlreadyGuessed guess
+        | guess `elem` previousGuesses     = AlreadyGuessed guess
         | otherwise                        = Playing
+    newCompleted = newFilledInSoFar puzzle guess
+    newGuesses = nub (guess : guesses') \\ catMaybes newCompleted
+    previousGuesses = guesses' ++ catMaybes completed'
 
 newFilledInSoFar :: Puzzle -> Char -> [Maybe Char]
 newFilledInSoFar (Puzzle answer' completed' _ _) guess =
