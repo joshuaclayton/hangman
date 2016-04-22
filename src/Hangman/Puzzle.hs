@@ -45,9 +45,9 @@ handleGuess puzzle guess =
     newPuzzle = puzzle { guesses = (guess : guesses'), completed = newFilledInSoFar }
     newState
         | all isJust (completed newPuzzle) = Won
-        | length (guesses newPuzzle) > 7 = Lost
-        | elem guess guesses' = AlreadyGuessed guess
-        | otherwise = Playing
+        | length (guesses newPuzzle) > 7   = Lost
+        | elem guess guesses'              = AlreadyGuessed guess
+        | otherwise                        = Playing
     zipper guessed wordChar guessChar =
         case wordChar == guessed of
             True  -> Just wordChar
