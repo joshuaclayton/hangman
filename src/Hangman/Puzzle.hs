@@ -32,10 +32,10 @@ stateAnnouncement puzzle =
         _ -> ""
 
 handleInput :: Puzzle -> String -> Puzzle
+handleInput puzzle [c] =
+    handleGuess puzzle c
 handleInput puzzle input =
-    case input of
-        [c] -> handleGuess puzzle c
-        _   -> puzzle { state = InvalidGuess input }
+    puzzle { state = InvalidGuess input }
 
 handleGuess :: Puzzle -> Char -> Puzzle
 handleGuess puzzle guess =
