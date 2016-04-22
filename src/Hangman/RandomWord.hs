@@ -3,8 +3,10 @@ module Hangman.RandomWord
     ) where
 
 import System.Random (randomRIO)
+import Data.Char (isUpper)
 
 type WordList = [String]
+type WordFilter = (String -> Bool)
 
 pickRandomWord :: IO String
 pickRandomWord =
@@ -24,4 +26,14 @@ randomWord wl = do
 
 gameWords :: WordList -> WordList
 gameWords wl =
-    filter (\w -> elem (length w) [5..9]) wl
+    foldr filter wl gameFilters
+
+gameFilters :: [WordFilter]
+gameFilters = [not . properNoun, inRange [5..9]]
+
+inRange :: [Int] -> WordFilter
+inRange r = (`elem` r) . length
+
+properNoun :: WordFilter
+properNoun [] = False
+properNoun (x:_) = isUpper x
