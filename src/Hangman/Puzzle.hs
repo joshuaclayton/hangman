@@ -32,10 +32,8 @@ stateAnnouncement puzzle =
         _ -> ""
 
 handleInput :: Puzzle -> String -> Puzzle
-handleInput puzzle [c] =
-    handleGuess puzzle c
-handleInput puzzle input =
-    puzzle { state = InvalidGuess input }
+handleInput puzzle [c]   = handleGuess puzzle c
+handleInput puzzle input = puzzle { state = InvalidGuess input }
 
 handleGuess :: Puzzle -> Char -> Puzzle
 handleGuess puzzle@(Puzzle _ completed' guesses' _) guess =
