@@ -1,13 +1,13 @@
 module Hangman.Puzzle
-    ( Puzzle (state)
+    ( Puzzle (Puzzle, state)
     , PuzzleState (..)
     , stateAnnouncement
     , newPuzzle
     , handleInput
     ) where
 
-import Data.Maybe (isJust, fromMaybe, catMaybes)
-import Data.List (intersperse, nub, (\\))
+import Data.Maybe (isJust, catMaybes)
+import Data.List (nub, (\\))
 
 data PuzzleState = NotStarted | Playing | InvalidGuess String | AlreadyGuessed Char | Won | Lost
 
@@ -58,8 +58,3 @@ newFilledInSoFar (Puzzle answer' completed' _ _) guess =
             True  -> Just wordChar
             False -> guessChar
 
-instance Show Puzzle where
-    show (Puzzle _ completed' guesses' _) =
-        (intersperse ' ' $ fmap renderPuzzleChar completed') ++ "  |  Guessed so far: " ++ guesses'
-      where
-        renderPuzzleChar = fromMaybe '_'

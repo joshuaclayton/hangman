@@ -4,6 +4,7 @@ import Control.Monad (forever)
 import System.Exit (exitSuccess)
 import Hangman.RandomWord (pickRandomWord)
 import Hangman.Puzzle
+import Hangman.Puzzle.Show()
 
 main :: IO ()
 main = do
