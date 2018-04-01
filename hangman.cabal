@@ -17,7 +17,6 @@ library
   hs-source-dirs:      src
   exposed-modules:     Hangman.RandomWord
                      , Hangman.Puzzle
-                     , Hangman.Puzzle.Show
   build-depends:       base >= 4.7 && < 5
                      , random == 1.1
   default-language:    Haskell2010

@@ -1,34 +1,28 @@
 module Main where
 
-import Control.Monad (forever)
-import System.Exit (exitSuccess)
-import Hangman.RandomWord (pickRandomWord)
+import Control.Monad ((<=<), forever)
 import Hangman.Puzzle
-import Hangman.Puzzle.Show()
+import Hangman.RandomWord (pickRandomWord)
+import System.Exit (exitSuccess)
 
 main :: IO ()
-main = do
-    word <- pickRandomWord
-    let puzzle = newPuzzle word
-    runGame puzzle
+main = runGame =<< newPuzzle <$> pickRandomWord
 
 runGame :: Puzzle -> IO ()
-runGame p = forever $ do
-    update p >>= runGame
+runGame = forever . runGame <=< update
 
 update :: Puzzle -> IO Puzzle
 update p = do
     renderPuzzle p
     putStrLn $ stateAnnouncement p
-
-    case state p of
-        Won              -> exitSuccess
-        Lost             -> exitSuccess
-        InvalidGuess   _ -> return $ p { state = Playing }
-        AlreadyGuessed _ -> return $ p { state = Playing }
-        _                -> do
-                            guess <- captureGuess
-                            return $ handleInput p guess
+    case pState p of
+        Won -> exitSuccess
+        Lost -> exitSuccess
+        InvalidGuess _ -> return $ p {pState = Playing}
+        AlreadyGuessed _ -> return $ p {pState = Playing}
+        _ -> do
+            guess <- captureGuess
+            return $ handleInput p guess
 
 captureGuess :: IO String
 captureGuess = do
@@ -36,5 +30,4 @@ captureGuess = do
     getLine
 
 renderPuzzle :: Puzzle -> IO ()
-renderPuzzle p = do
-    putStrLn $ "\n" ++ show p ++ "\n"
+renderPuzzle p = putStrLn $ "\n" ++ show p ++ "\n"
